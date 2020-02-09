@@ -1,25 +1,81 @@
 
-
+<script src="jquery-3.4.1.min.js"></script>
 <style>
-	#byte_content {
-	  margin: 5px 0;
-	  max-height: 100px;
-	  overflow-y: auto;
-	  overflow-x: hidden;
-	}
-	#byte_range { margin-top: 5px; }
-  </style>
-  
-  <input type="file" id="files" name="file" />
-  <span class="readBytesButtons">
-	<button>entire file</button>
-  </span>
 
+.getbutton {
+	background-color: rgb(184, 184, 184); 
+	color: white;
+	border: 0px;
+	border-radius: 12px;
+	padding: 6px 12px;
+    font-size: 27px;
+	cursor: pointer;
+}
+	.readbutton {
+	background-color: rgb(103, 183, 220); 
+	color: white;
+	border: 0px;
+	border-radius: 12px;
+	padding: 6px 12px;
+    font-size: 27px;
+	cursor: pointer;
+}
+#files {
+   opacity: 0;
+   position: absolute;
+   z-index: -1;
+}
+ .leftstat{
+	background-color: rgb(103, 183, 220); 
+	float: left;
+	border-radius: 12px;
+	margin-left: 17%;
+	font-size: 40px;
+	padding: 20px
+ }
+ .rightstat{
+	float: right;
+	margin-right: 17%;
+	font-size: 40px;
+	border-radius: 12px;
+	background-color: rgb(103, 183, 220); 
+	padding: 20px
+ }
+  </style>
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<div style = "font: 400 11px system-ui;">
+<div style = " padding: 10px; display: flex; justify-content: center">
+	<label class = "getbutton" for="files">Choose File</label>
+	<input class= "getbutton"  type="file" id="files" name="file" />
+</div>
+<span style = "display: flex; justify-content: center" class="readBytesButtons">
+	<button class= "readbutton" >Crunch Data</button>
+</span>
+
+<div id = "datastorage" style = "visibility: hidden;">
+
+<div style = "height: 100px">
+	<div class= "leftstat" >
+		<div style = "text-align: center;"id="totalspent"></div>
+		<div>Total Spent</div>
+	</div>
+	<div class= "rightstat" id="mostExpensive"></div>
+</div>
+
+<div>
+  <div class= "leftstat"id="totalItemsBought"></div>
+  <div class= "rightstat"id="totalSavedFromListPrice"></div>
+</div>
+
+</div>
   <style>
-body { background-color: #30303d; color: #fff; }
-#chartdiv {
-  width: 100%;
-  height: 500px;
+	body { background-color: #30303d; color: #fff; }
+	#chartdiv {
+  	width: 100%;
+  	height: 500px;
 }
 	</style>
 	
@@ -36,6 +92,8 @@ body { background-color: #30303d; color: #fff; }
 	<div id="chartdiv"></div>
 	<div id="chartdivpie"></div>
 	<div id="chartdivtime"></div>
+
+</div>
 	
 
   

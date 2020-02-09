@@ -1,6 +1,22 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const Papa = require('papaparse');
 
+function price_to_number(v){
+    if(!v){return 0;}
+    v=v.split('.').join('');
+	v=v.split(',').join('.');
+	v = Number(v.replace(/[^0-9.]/g, ""));
+	v = v/100;
+    return v;
+}
+
+$('#files').change(function() {
+	var i = $(this).prev('label').clone();
+	var file = $('#files')[0].files[0].name;
+	$(this).prev('label').text(file);
+	$(this).prev('label').css("background-color","rgb(125, 220, 103)", "border", "2px solid rgb(103, 183, 220)")
+  });
+
 function readBlob() {
 
     var files = document.getElementById('files').files;
@@ -18,8 +34,29 @@ function readBlob() {
 		  data = results.data;
 		// Do stuff with the parsed data
 
-		//BAR PLOT
+		var totalSpent = 0;
+		var mostExpensiveIndex = 0;
+		var totalItemsBought = data.length;
+		var totalShippingSpent = 0;
+		var totalSavedFromListPrice = 0;
+		var date = [];
+		for(var i = 0; i<data.length; i++){
+			date[i] = (data[i]["Order Date"]).split('/');
+			totalSpent = totalSpent + price_to_number(data[i]["Item Total"]);
+			totalSavedFromListPrice = totalSavedFromListPrice + price_to_number(data[i]["List Price Per Unit"]) - price_to_number(data[i]["Purchase Price Per Unit"])
+			if(price_to_number(data[mostExpensiveIndex]["Item Total"]) < price_to_number(data[i]["Item Total"])){
+				mostExpensiveIndex = i;
+			}
+		}
+		console.log(date);
+		document.getElementById("datastorage").style = "visibility: visible";
+		document.getElementById("totalspent").innerHTML = "$" + totalSpent.toFixed(2);
+		document.getElementById("mostExpensive").innerHTML = data[mostExpensiveIndex]["Purchase Price Per Unit"];
+		document.getElementById("totalItemsBought").innerHTML = totalItemsBought;
+		document.getElementById("totalSavedFromListPrice").innerHTML = "$" + totalSavedFromListPrice.toFixed(2);
 
+
+		//BAR PLOT
 
 
 		am4core.ready(function() {
