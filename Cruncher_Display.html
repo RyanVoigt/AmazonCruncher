@@ -25,25 +25,52 @@
    position: absolute;
    z-index: -1;
 }
- .leftstat{
+ .statscards{
 	background-color: rgb(103, 183, 220); 
-	float: left;
-	border-radius: 12px;
-	margin-left: 17%;
-	font-size: 40px;
-	padding: 20px
+	border-radius: 15px;
+	font-size: 50px;
+	padding: 15px;
+	text-align: center;
+    width: 40%;
+    height: auto;
+    margin: 0 auto;
+	margin-top: 20px;
+    position: relative;
  }
- .rightstat{
-	float: right;
-	margin-right: 17%;
-	font-size: 40px;
-	border-radius: 12px;
-	background-color: rgb(103, 183, 220); 
-	padding: 20px
- }
+ table {
+  width:70%;
+  margin: 0 auto;
+}
+table, th, td {
+  border-collapse: collapse;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+table tr:nth-child(2) td:last-child {
+  border-radius: 0 15px 0 0 !important;
+}
+table tr:nth-child(2) td:first-child {
+	border-radius: 15px 0 0 0 !important;
+}
+table tr:last-child td:first-child {
+  border-radius: 0 0 0 15px !important;
+}
+table tr:last-child td:last-child {
+  border-radius: 0 0 15px 0 !important;
+}
+table#t01 tr:nth-child(even) {
+  background-color: #eee;
+}
+table#t01 tr:nth-child(odd) {
+ background-color: #fff;
+}
+table#t01 th {
+  background-color: rgb(220, 210, 103);
+  color: white;
+}
   </style>
-
-
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <div style = "font: 400 11px system-ui;">
@@ -57,20 +84,51 @@
 
 <div id = "datastorage" style = "visibility: hidden;">
 
-<div style = "height: 100px">
-	<div class= "leftstat" >
+<div style ="display: inline-block; width: 49.5%; height: 300px;">
+	<div style = "background-color: rgb(220, 105, 103)" class= "statscards" >
 		<div style = "text-align: center;"id="totalspent"></div>
-		<div>Total Spent</div>
+		<div style = "font-size: 20px;">Total Spent</div>
 	</div>
-	<div class= "rightstat" id="mostExpensive"></div>
+	<div style = "background-color: rgb(220, 210, 103)"class= "statscards">
+		<div style = "text-align: center;"id="mostExpensive"></div>
+		<div style = "font-size: 20px;">Most Expensive Item</div>
+		<table id="t01">
+			<tr>
+			  <th>Firstname</th>
+			  <th>Lastname</th> 
+			  <th>Age</th>
+			</tr>
+			<tr>
+			  <td>Jill</td>
+			  <td>Smith</td>
+			  <td>50</td>
+			</tr>
+			<tr>
+			  <td>Eve</td>
+			  <td>Jackson</td>
+			  <td>94</td>
+			</tr>
+			<tr>
+			  <td>John</td>
+			  <td>Doe</td>
+			  <td>80</td>
+			</tr>
+		  </table>
+	</div>
+</div>
+<div style ="display: inline-block; width: 50%; height: 300px;">
+	<div style = "background-color: rgb(128, 103, 220)" class= "statscards">
+		<div style = "text-align: center;"id="totalItemsBought"></div>
+		<div style = "font-size: 20px;">Total Items Purchased</div>
+	  </div>
+	  <div style = "background-color: rgb(125, 220, 103)" class= "statscards">
+		<div style = "text-align: center;"id="totalSavedFromListPrice"></div>
+		<div style = "font-size: 20px;">Total Money Saved Off List Price</div>
+	  </div>
 </div>
 
-<div>
-  <div class= "leftstat"id="totalItemsBought"></div>
-  <div class= "rightstat"id="totalSavedFromListPrice"></div>
-</div>
 
-</div>
+
   <style>
 	body { background-color: #30303d; color: #fff; }
 	#chartdiv {
