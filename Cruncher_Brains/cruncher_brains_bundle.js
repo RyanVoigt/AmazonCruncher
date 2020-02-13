@@ -1,12 +1,31 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const Papa = require('papaparse');
-
+function sleep(milliseconds) {
+	var start = new Date().getTime();
+	for (var i = 0; i < 1e7; i++) {
+	  if ((new Date().getTime() - start) > milliseconds){
+		break;
+	  }
+	}
+  }
 function price_to_number(v){
     if(!v){return 0;}
     v=v.split('.').join('');
 	v=v.split(',').join('.');
 	v = Number(v.replace(/[^0-9.]/g, ""));
 	v = v/100;
+    return v;
+}
+function date_to_month(v){
+    if(!v){return 0;}
+    v=v.split('/');
+	v = Number(v[0]);
+    return v;
+}
+function date_to_year(v){
+    if(!v){return 0;}
+    v=v.split('/');
+	v = Number(v[2]);
     return v;
 }
 
@@ -33,30 +52,110 @@ function readBlob() {
 		  console.log(results);
 		  data = results.data;
 		// Do stuff with the parsed data
-
+		let categoryMap = new Map()
 		var totalSpent = 0;
-		var mostExpensiveIndex = 0;
+		var mostExpensiveIndex1 = 0;
+		var mostExpensiveIndex2 = 0;
+		var mostExpensiveIndex3 = 0;
 		var totalItemsBought = data.length;
 		var totalShippingSpent = 0;
 		var totalSavedFromListPrice = 0;
-		var date = [];
+		var date = 0;
+		var monthSpent = [0,0,0,0,0,0,0,0,0,0,0,0];
 		for(var i = 0; i<data.length; i++){
 			date[i] = (data[i]["Order Date"]).split('/');
 			totalSpent = totalSpent + price_to_number(data[i]["Item Total"]);
 			totalSavedFromListPrice = totalSavedFromListPrice + price_to_number(data[i]["List Price Per Unit"]) - price_to_number(data[i]["Purchase Price Per Unit"])
-			if(price_to_number(data[mostExpensiveIndex]["Item Total"]) < price_to_number(data[i]["Item Total"])){
-				mostExpensiveIndex = i;
+			if(price_to_number(data[mostExpensiveIndex1]["Item Total"]) < price_to_number(data[i]["Item Total"])){
+				mostExpensiveIndex3 = mostExpensiveIndex2;
+				mostExpensiveIndex2 = mostExpensiveIndex1;
+				mostExpensiveIndex1 = i;
 			}
+			date = date_to_month(data[i]["Order Date"]);
+			monthSpent[date] = monthSpent[date] + price_to_number(data[i]["Item Total"])
+			var category = data[i]["Category"]
+			if(categoryMap.has(category)){
+				categoryMap.set(category, (categoryMap.get(category)+1))
+			}
+			else{
+				categoryMap.set(category, 1);
+			}
+			console.log(categoryMap.get(category))
 		}
-		console.log(date);
-		document.getElementById("datastorage").style = "visibility: visible";
 		document.getElementById("totalspent").innerHTML = "$" + totalSpent.toFixed(2);
-		document.getElementById("mostExpensive").innerHTML = data[mostExpensiveIndex]["Purchase Price Per Unit"];
+		document.getElementById("mostExpensive").innerHTML = data[mostExpensiveIndex1]["Purchase Price Per Unit"];
 		document.getElementById("totalItemsBought").innerHTML = totalItemsBought;
 		document.getElementById("totalSavedFromListPrice").innerHTML = "$" + totalSavedFromListPrice.toFixed(2);
-
-
+		document.getElementById("mostExpensiveItem1Name").innerHTML = data[mostExpensiveIndex1]["Title"]
+		document.getElementById("mostExpensiveItem1Price").innerHTML = data[mostExpensiveIndex1]["Item Total"]
+		document.getElementById("mostExpensiveItem1Link").innerHTML = data[mostExpensiveIndex1]["Website"]
+		document.getElementById("mostExpensiveItem2Name").innerHTML = data[mostExpensiveIndex2]["Title"]
+		document.getElementById("mostExpensiveItem2Price").innerHTML = data[mostExpensiveIndex2]["Item Total"]
+		document.getElementById("mostExpensiveItem2Link").innerHTML = data[mostExpensiveIndex2]["Website"]
+		document.getElementById("mostExpensiveItem3Name").innerHTML = data[mostExpensiveIndex3]["Title"]
+		document.getElementById("mostExpensiveItem3Price").innerHTML = data[mostExpensiveIndex3]["Item Total"]
+		document.getElementById("mostExpensiveItem3Link").innerHTML = data[mostExpensiveIndex3]["Website"]
+		document.getElementById("datastorage").style = "visibility: visible";
+		document.getElementById("redcard").style = "animation-name: enterLeft; display: inline-block; width: 27%; position: relative; animation-duration: 2s;";
+		document.getElementById("greencard").style = "animation-name: enterRight; display: inline-block; width: 27%; position: relative; animation-duration: 2s;";
 		//BAR PLOT
+
+//PIE Chart
+
+am4core.ready(function() {
+
+	// Themes begin
+	am4core.useTheme(am4themes_dark);
+	am4core.useTheme(am4themes_animated);
+	// Themes end
+	
+	var chart = am4core.create("chartdivpie", am4charts.PieChart3D);
+	chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+	
+	chart.data = [
+	  {
+		country: "Lithuania",
+		litres: 501.9
+	  },
+	  {
+		country: "Czech Republic",
+		litres: 301.9
+	  },
+	  {
+		country: "Ireland",
+		litres: 201.1
+	  },
+	  {
+		country: "Germany",
+		litres: 165.8
+	  },
+	  {
+		country: "Australia",
+		litres: 139.9
+	  },
+	  {
+		country: "Austria",
+		litres: 128.3
+	  }
+	];
+	
+	chart.innerRadius = am4core.percent(40);
+	chart.depth = 120;
+	
+	chart.legend = new am4charts.Legend();
+	
+	var series = chart.series.push(new am4charts.PieSeries3D());
+	series.dataFields.value = "litres";
+	series.dataFields.depthValue = "litres";
+	series.dataFields.category = "country";
+	series.slices.template.cornerRadius = 5;
+	series.colors.step = 3;
+	
+	}); // end am4core.ready()
+
+
+
+
 
 
 		am4core.ready(function() {
@@ -67,41 +166,41 @@ function readBlob() {
 			// Themes end
 			var chart = am4core.create("chartdiv", am4charts.XYChart);
 			chart.data = [{
-			 "date": "Janurary ",
-			 "money_spent": 2025
+			 "date": "Janurary",
+			 "money_spent": monthSpent[0]
 			}, {
 			 "date": "Feburary",
-			 "money_spent": 1882
+			 "money_spent": monthSpent[1]
 			}, {
 			 "date": "March",
-			 "money_spent": 1809
+			 "money_spent": monthSpent[2]
 			}, {
 			 "date": "April",
-			 "money_spent": 1322
+			 "money_spent": monthSpent[3]
 			}, {
 			 "date": "May",
-			 "money_spent": 1122
+			 "money_spent": monthSpent[4]
 			}, {
 			 "date": "June",
-			 "money_spent": 1114
+			 "money_spent": monthSpent[5]
 			}, {
 			 "date": "July",
-			 "money_spent": 984
+			 "money_spent": monthSpent[6]
 			}, {
 			 "date": "August",
-			 "money_spent": 711
+			 "money_spent": monthSpent[7]
 			}, {
 			 "date": "September",
-			 "money_spent": 665
+			 "money_spent": monthSpent[8]
 			}, {
 			 "date": "October",
-			 "money_spent": 580
+			 "money_spent": monthSpent[9]
 			}, {
 			 "date": "November",
-			 "money_spent": 443
+			 "money_spent": monthSpent[10]
 			}, {
 			 "date": "December",
-			 "money_spent": 441
+			 "money_spent": monthSpent[11]
 			}];
 			
 			chart.padding(40, 40, 40, 40);
@@ -151,72 +250,6 @@ function readBlob() {
 			categoryAxis.sortBySeries = series;
 			
 			}); // end am4core.ready()
-
-
-
-
-
-
-
-
-
-
-			//PIE Chart
-
-			am4core.ready(function() {
-
-				// Themes begin
-				am4core.useTheme(am4themes_dark);
-				am4core.useTheme(am4themes_animated);
-				// Themes end
-				
-				var chart = am4core.create("chartdivpie", am4charts.PieChart3D);
-				chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-				
-				chart.data = [
-				  {
-					country: "Lithuania",
-					litres: 501.9
-				  },
-				  {
-					country: "Czech Republic",
-					litres: 301.9
-				  },
-				  {
-					country: "Ireland",
-					litres: 201.1
-				  },
-				  {
-					country: "Germany",
-					litres: 165.8
-				  },
-				  {
-					country: "Australia",
-					litres: 139.9
-				  },
-				  {
-					country: "Austria",
-					litres: 128.3
-				  }
-				];
-				
-				chart.innerRadius = am4core.percent(40);
-				chart.depth = 120;
-				
-				chart.legend = new am4charts.Legend();
-				
-				var series = chart.series.push(new am4charts.PieSeries3D());
-				series.dataFields.value = "litres";
-				series.dataFields.depthValue = "litres";
-				series.dataFields.category = "country";
-				series.slices.template.cornerRadius = 5;
-				series.colors.step = 3;
-				
-				}); // end am4core.ready()
-
-
-
-
 
 				//TIME PLOT
 				am4core.ready(function() {

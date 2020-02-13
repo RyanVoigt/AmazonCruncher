@@ -20,6 +20,11 @@
     font-size: 27px;
 	cursor: pointer;
 }
+body { background-color: #30303d; color: #fff; }
+	#chartdiv {
+  	width: 100%;
+  	height: 500px;
+	}
 #files {
    opacity: 0;
    position: absolute;
@@ -31,14 +36,13 @@
 	font-size: 50px;
 	padding: 15px;
 	text-align: center;
-    width: 40%;
     height: auto;
     margin: 0 auto;
 	margin-top: 20px;
     position: relative;
  }
  table {
-  width:70%;
+  width:100%;
   margin: 0 auto;
 }
 table, th, td {
@@ -47,6 +51,9 @@ table, th, td {
 th, td {
   padding: 15px;
   text-align: left;
+}
+tr{
+	color: #30303d
 }
 table tr:nth-child(2) td:last-child {
   border-radius: 0 15px 0 0 !important;
@@ -70,6 +77,15 @@ table#t01 th {
   background-color: rgb(220, 210, 103);
   color: white;
 }
+
+@keyframes enterLeft {
+  0%   {right: 400px}
+  100%  {right: 0px}
+}
+@keyframes enterRight {
+  0%   {left: 400px}
+  100%  {left: 0px}
+}
   </style>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -84,59 +100,53 @@ table#t01 th {
 
 <div id = "datastorage" style = "visibility: hidden;">
 
-<div style ="display: inline-block; width: 49.5%; height: 300px;">
-	<div style = "background-color: rgb(220, 105, 103)" class= "statscards" >
+<div style = "text-align: center; margin-bottom: 30px">
+<div id = "redcard" >
+	<div style = "background-color: rgb(220, 105, 103); margin-right: 15px;" class= "statscards" >
 		<div style = "text-align: center;"id="totalspent"></div>
 		<div style = "font-size: 20px;">Total Spent</div>
 	</div>
-	<div style = "background-color: rgb(220, 210, 103)"class= "statscards">
+</div>
+<div style = "display: inline-block; width: 17%" >
+	<div style = " background-color: rgb(128, 103, 220)" class= "statscards">
+		<div style = "text-align: center;"id="totalItemsBought"></div>
+		<div style = "font-size: 20px;">Total Items Purchased</div>
+	  </div>
+	</div>
+	<div id = "greencard" style = "display: inline-block; width: 27%" >
+	  <div style = "background-color: rgb(125, 220, 103); margin-left: 15px" class= "statscards">
+		<div style = "text-align: center;"id="totalSavedFromListPrice"></div>
+		<div style = "font-size: 20px;">Total Money Saved Off List Price</div>
+	  </div>
+	</div>
+</div>
+	<div style = " width: 70%; background-color: rgb(220, 210, 103)"class= "statscards">
 		<div style = "text-align: center;"id="mostExpensive"></div>
 		<div style = "font-size: 20px;">Most Expensive Item</div>
 		<table id="t01">
 			<tr>
-			  <th>Firstname</th>
-			  <th>Lastname</th> 
-			  <th>Age</th>
+			  <th>ITEM</th>
+			  <th>PRICE</th> 
+			  <th>LINK</th>
 			</tr>
 			<tr>
-			  <td>Jill</td>
-			  <td>Smith</td>
-			  <td>50</td>
+			  <td id="mostExpensiveItem1Name">Jill</td>
+			  <td id="mostExpensiveItem1Price">Smith</td>
+			  <td id="mostExpensiveItem1Link">50</td>
 			</tr>
 			<tr>
-			  <td>Eve</td>
-			  <td>Jackson</td>
-			  <td>94</td>
+			  <td id="mostExpensiveItem2Name">Eve</td>
+			  <td id="mostExpensiveItem2Price">Jackson</td>
+			  <td id="mostExpensiveItem2Link">94</td>
 			</tr>
 			<tr>
-			  <td>John</td>
-			  <td>Doe</td>
-			  <td>80</td>
+			  <td id="mostExpensiveItem3Name">John</td>
+			  <td id="mostExpensiveItem3Price">Doe</td>
+			  <td id="mostExpensiveItem3Link">80</td>
 			</tr>
 		  </table>
 	</div>
 </div>
-<div style ="display: inline-block; width: 50%; height: 300px;">
-	<div style = "background-color: rgb(128, 103, 220)" class= "statscards">
-		<div style = "text-align: center;"id="totalItemsBought"></div>
-		<div style = "font-size: 20px;">Total Items Purchased</div>
-	  </div>
-	  <div style = "background-color: rgb(125, 220, 103)" class= "statscards">
-		<div style = "text-align: center;"id="totalSavedFromListPrice"></div>
-		<div style = "font-size: 20px;">Total Money Saved Off List Price</div>
-	  </div>
-</div>
-
-
-
-  <style>
-	body { background-color: #30303d; color: #fff; }
-	#chartdiv {
-  	width: 100%;
-  	height: 500px;
-}
-	</style>
-	
 	<!-- Resources -->
 	<script src="https://www.amcharts.com/lib/4/core.js"></script>
 	<script src="https://www.amcharts.com/lib/4/charts.js"></script>
@@ -147,8 +157,8 @@ table#t01 th {
 	<script src="./Cruncher_Brains/cruncher_brains_bundle.js"></script>
 	
 	<!-- HTML -->
-	<div id="chartdiv"></div>
 	<div id="chartdivpie"></div>
+	<div id="chartdiv"></div>
 	<div id="chartdivtime"></div>
 
 </div>
