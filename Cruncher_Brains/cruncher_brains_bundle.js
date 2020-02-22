@@ -16,17 +16,44 @@ function price_to_number(v){
 	v = v/100;
     return v;
 }
+function format_category(v){
+    if(!v){return 0;}
+	v=v.split('_').join(' ');
+	return v
+	.replace(/(\B)[^ ]*/g,match =>(match.toLowerCase()))
+	.replace(/^[^ ]/g,match=>(match.toUpperCase()));
+}
 function date_to_month(v){
     if(!v){return 0;}
-    v=v.split('/');
+    v = v.split('/');
 	v = Number(v[0]);
     return v;
 }
-function date_to_year(v){
+function format_date(v){
     if(!v){return 0;}
     v=v.split('/');
-	v = Number(v[2]);
-    return v;
+	v[2] = "20" + v[2];
+	var flip = [v[2],v[0],v[1]]
+	flip=flip.join('-')
+    return flip;
+}
+function format_date_input(v){
+	v=v.split(' ');
+	if(v[1] == "Jan"){v[1] = "01"}
+	else if(v[1] == "Feb"){v[1] = "02"}
+	else if(v[1] == "Mar"){v[1] = "03"}
+	else if(v[1] == "Apr"){v[1] = "04"}
+	else if(v[1] == "May"){v[1] = "05"}
+	else if(v[1] == "Jun"){v[1] = "06"}
+	else if(v[1] == "Jul"){v[1] = "07"}
+	else if(v[1] == "Aug"){v[1] = "08"}
+	else if(v[1] == "Sep"){v[1] = "09"}
+	else if(v[1] == "Oct"){v[1] = "10"}
+	else if(v[1] == "Nov"){v[1] = "11"}
+	else if(v[1] == "Dec"){v[1] = "12"}
+	var flip = [v[1],v[2],v[3]]
+	flip=flip.join('/')
+	return flip
 }
 
 $('#files').change(function() {
@@ -37,15 +64,23 @@ $('#files').change(function() {
   });
 
 function readBlob() {
-
     var files = document.getElementById('files').files;
     if (!files.length) {
       alert('Please select a file!');
       return;
     }
 
+var getDateMap = function(start, end) {
+		let dateMap= new Map()
+		var dt = new Date(start);
+		while (dt <= end) {
+			var bop = new Date(dt)
+			dateMap.set(format_date_input(bop.toString()),0)
+			dt.setDate(dt.getDate() + 1);
+		}
+		return dateMap;
+	}
 	var file = files[0];
-	
 	Papa.parse(file,{
 		header: true,
 		complete: function(results) {
@@ -58,21 +93,34 @@ function readBlob() {
 		var mostExpensiveIndex2 = 0;
 		var mostExpensiveIndex3 = 0;
 		var totalItemsBought = data.length;
-		var totalShippingSpent = 0;
 		var totalSavedFromListPrice = 0;
-		var date = 0;
+		var datenum = 0;
+		var date = [];
+		var start = new Date(format_date(data[0]["Order Date"]))
+		var endDate = new Date(format_date(data[(data.length-1)]["Order Date"])); //YYYY-MM-DD
+		let dateMap = getDateMap(start, endDate)
 		var monthSpent = [0,0,0,0,0,0,0,0,0,0,0,0];
+
 		for(var i = 0; i<data.length; i++){
+			var checkDate = format_date_input((new Date(format_date(data[i]["Order Date"]))).toString());
+			if(dateMap.has(checkDate)){
+				
+				dateMap.set(checkDate, (dateMap.get(checkDate)+ 1 ))
+			}
 			date[i] = (data[i]["Order Date"]).split('/');
 			totalSpent = totalSpent + price_to_number(data[i]["Item Total"]);
-			totalSavedFromListPrice = totalSavedFromListPrice + price_to_number(data[i]["List Price Per Unit"]) - price_to_number(data[i]["Purchase Price Per Unit"])
+			if(price_to_number(data[i]["List Price Per Unit"]) != 0){
+				totalSavedFromListPrice = totalSavedFromListPrice + price_to_number(data[i]["List Price Per Unit"]) - price_to_number(data[i]["Purchase Price Per Unit"])
+			}
+			
 			if(price_to_number(data[mostExpensiveIndex1]["Item Total"]) < price_to_number(data[i]["Item Total"])){
 				mostExpensiveIndex3 = mostExpensiveIndex2;
 				mostExpensiveIndex2 = mostExpensiveIndex1;
 				mostExpensiveIndex1 = i;
 			}
-			date = date_to_month(data[i]["Order Date"]);
-			monthSpent[date] = monthSpent[date] + price_to_number(data[i]["Item Total"])
+			datenum = date_to_month(data[i]["Order Date"]) - 1;
+
+			monthSpent[datenum] = monthSpent[datenum] + price_to_number(data[i]["Item Total"])
 			var category = data[i]["Category"]
 			if(categoryMap.has(category)){
 				categoryMap.set(category, (categoryMap.get(category)+1))
@@ -80,11 +128,10 @@ function readBlob() {
 			else{
 				categoryMap.set(category, 1);
 			}
-			console.log(categoryMap.get(category))
 		}
 		document.getElementById("totalspent").innerHTML = "$" + totalSpent.toFixed(2);
-		document.getElementById("mostExpensive").innerHTML = data[mostExpensiveIndex1]["Purchase Price Per Unit"];
-		document.getElementById("totalItemsBought").innerHTML = totalItemsBought;
+		document.getElementById("mostExpensive").innerHTML = data[mostExpensiveIndex1]["Item Total"];
+		document.getElementById("totalItemsBought").innerHTML = (totalItemsBought-1) ;
 		document.getElementById("totalSavedFromListPrice").innerHTML = "$" + totalSavedFromListPrice.toFixed(2);
 		document.getElementById("mostExpensiveItem1Name").innerHTML = data[mostExpensiveIndex1]["Title"]
 		document.getElementById("mostExpensiveItem1Price").innerHTML = data[mostExpensiveIndex1]["Item Total"]
@@ -101,44 +148,24 @@ function readBlob() {
 		//BAR PLOT
 
 //PIE Chart
-
 am4core.ready(function() {
-
 	// Themes begin
 	am4core.useTheme(am4themes_dark);
 	am4core.useTheme(am4themes_animated);
 	// Themes end
-	
 	var chart = am4core.create("chartdivpie", am4charts.PieChart3D);
 	chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-	
-	chart.data = [
-	  {
-		country: "Lithuania",
-		litres: 501.9
-	  },
-	  {
-		country: "Czech Republic",
-		litres: 301.9
-	  },
-	  {
-		country: "Ireland",
-		litres: 201.1
-	  },
-	  {
-		country: "Germany",
-		litres: 165.8
-	  },
-	  {
-		country: "Australia",
-		litres: 139.9
-	  },
-	  {
-		country: "Austria",
-		litres: 128.3
-	  }
-	];
-	
+	var iterator_obj = categoryMap.entries(); 
+	var i = 0;
+	for(i = 0; i < categoryMap.size; i++){
+		var x = iterator_obj.next().value
+		if(x[0]){
+			chart.data[i] = {
+				country: format_category(x[0]),
+				litres: x[1],
+			  };
+		}
+	}
 	chart.innerRadius = am4core.percent(40);
 	chart.depth = 120;
 	
@@ -152,11 +179,6 @@ am4core.ready(function() {
 	series.colors.step = 3;
 	
 	}); // end am4core.ready()
-
-
-
-
-
 
 		am4core.ready(function() {
 
@@ -204,7 +226,6 @@ am4core.ready(function() {
 			}];
 			
 			chart.padding(40, 40, 40, 40);
-			
 			var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 			categoryAxis.renderer.grid.template.location = 0;
 			categoryAxis.dataFields.category = "date";
@@ -239,16 +260,7 @@ am4core.ready(function() {
 			 return chart.colors.getIndex(target.dataItem.index);
 			});
 			
-			setInterval(function () {
-			 am4core.array.each(chart.data, function (item) {
-			   item.money_spent += Math.round(Math.random() * 200 - 100);
-			   item.money_spent = Math.abs(item.money_spent);
-			 })
-			 chart.invalidateRawData();
-			}, 3000)
-			
 			categoryAxis.sortBySeries = series;
-			
 			}); // end am4core.ready()
 
 				//TIME PLOT
@@ -260,102 +272,38 @@ am4core.ready(function() {
 					
 					var chart = am4core.create("chartdivtime", am4charts.XYChart);
 					
-					var data = [];
-					
-					chart.data = [{
-					  "year": "2000",
-					  "income": 23.5,
-					  "expenses": 21.1,
-					  "lineColor": chart.colors.next()
-					}, 
-					{
-						"year": "2001",
-						"income": 34.1,
-						"expenses": 31.9,
-						"lineColor": chart.colors.next()
-					},
-					{
-					  "year": "2002",
-					  "income": 26.2,
-					  "expenses": 30.5,
-					  "lineColor": chart.colors.next()
-					}, {
-					  "year": "2003",
-					  "income": 30.1,
-					  "expenses": 34.9,
-					  "lineColor": chart.colors.next()
-					}, {
-					  "year": "2004",
-					  "income": 20.5,
-					  "expenses": 23.1,
-					  "lineColor": chart.colors.next()
-					},
-					{
-						"year": "2005",
-						"income": 34.1,
-						"expenses": 31.9,
-						"lineColor": chart.colors.next()
-					}, 
-					{
-						"year": "2006",
-						"income": 34.1,
-						"expenses": 31.9,
-						"lineColor": chart.colors.next()
-					},
-					{
-					  "year": "2007",
-					  "income": 30.6,
-					  "expenses": 28.2,
-					  "lineColor": chart.colors.next()
-					}, 
-					{
-						"year": "2008",
-						"income": 34.1,
-						"expenses": 31.9,
-						"lineColor": chart.colors.next()
-					},
-					{
-					  "year": "2019",
-					  "income": 34.1,
-					  "expenses": 31.9,
-					  "lineColor": chart.colors.next()
-					}, {
-					  "year": "2020",
-					  "income": 34.1,
-					  "expenses": 31.9,
-					  "lineColor": chart.colors.next()
-					}, {
-						"year": "2021",
-						"income": 20.5,
-						"expenses": 23.1,
-						"lineColor": chart.colors.next()
-					  },{
-					  "year": "2022",
-					  "income": 34.1,
-					  "expenses": 31.9,
-					  "lineColor": chart.colors.next()
-					}, {
-					  "year": "2023",
-					  "income": 34.1,
-					  "expenses": 31.9,
-					  "lineColor": chart.colors.next()
-					}, {
-					  "year": "2024",
-					  "income": 34.1,
-					  "expenses": 31.9,
-					  "lineColor": chart.colors.next()
-					}];
-					
+					var iterator_obj = dateMap.entries(); 
+					var i = 0;
+					var count = 0;
+					var string = " "
+					for(i = 0; i < dateMap.size; i++){
+						var x = iterator_obj.next().value
+						string = string + " ";
+						var date = string;
+						
+						if(x[1] != 0){
+							date = x[0]
+						}
+						if(x[0]){
+							if(x[1] != 0 || i%8 == 0){
+							chart.data[count] = {
+								date: date,
+								Items_Purchased: x[1],
+								lineColor: chart.colors.next()
+							  };
+							  count++
+							}
+						}
+					}
 					var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 					categoryAxis.renderer.grid.template.location = 0;
 					categoryAxis.renderer.ticks.template.disabled = true;
 					categoryAxis.renderer.line.opacity = 0;
 					categoryAxis.renderer.grid.template.disabled = true;
-					categoryAxis.renderer.minGridDistance = 40;
-					categoryAxis.dataFields.category = "year";
+					categoryAxis.renderer.minGridDistance = 0;
+					categoryAxis.dataFields.category = "date";
 					categoryAxis.startLocation = 0.4;
 					categoryAxis.endLocation = 0.6;
-					
 					
 					var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 					valueAxis.tooltip.disabled = true;
@@ -364,16 +312,16 @@ am4core.ready(function() {
 					valueAxis.min = 0;
 					
 					var lineSeries = chart.series.push(new am4charts.LineSeries());
-					lineSeries.dataFields.categoryX = "year";
-					lineSeries.dataFields.valueY = "income";
-					lineSeries.tooltipText = "income: {valueY.value}";
+					lineSeries.dataFields.categoryX = "date";
+					lineSeries.dataFields.valueY = "Items_Purchased";
+					lineSeries.tooltipText = "Items Purchased: {valueY.value}";
 					lineSeries.fillOpacity = 0.5;
 					lineSeries.strokeWidth = 3;
 					lineSeries.propertyFields.stroke = "lineColor";
 					lineSeries.propertyFields.fill = "lineColor";
 					
 					var bullet = lineSeries.bullets.push(new am4charts.CircleBullet());
-					bullet.circle.radius = 6;
+					bullet.circle.radius = 1;
 					bullet.circle.fill = am4core.color("#fff");
 					bullet.circle.strokeWidth = 3;
 					
@@ -386,11 +334,8 @@ am4core.ready(function() {
 					chart.scrollbarX.parent = chart.bottomAxesContainer;
 					
 					}); // end am4core.ready()
-
-		  
 		}
 	  });
-	  
   }
   var data
   document.querySelector('.readBytesButtons').addEventListener('click', function(evt) {

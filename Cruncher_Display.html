@@ -104,25 +104,25 @@ table#t01 th {
 <div id = "redcard" >
 	<div style = "background-color: rgb(220, 105, 103); margin-right: 15px;" class= "statscards" >
 		<div style = "text-align: center;"id="totalspent"></div>
-		<div style = "font-size: 20px;">Total Spent</div>
+		<div style = "font-size: 22px;">Total Spent</div>
 	</div>
 </div>
 <div style = "display: inline-block; width: 17%" >
 	<div style = " background-color: rgb(128, 103, 220)" class= "statscards">
 		<div style = "text-align: center;"id="totalItemsBought"></div>
-		<div style = "font-size: 20px;">Total Items Purchased</div>
+		<div style = "font-size: 22px;">Total Items Purchased</div>
 	  </div>
 	</div>
 	<div id = "greencard" style = "display: inline-block; width: 27%" >
 	  <div style = "background-color: rgb(125, 220, 103); margin-left: 15px" class= "statscards">
 		<div style = "text-align: center;"id="totalSavedFromListPrice"></div>
-		<div style = "font-size: 20px;">Total Money Saved Off List Price</div>
+		<div style = "font-size: 22px;">Total Money Saved Off List Price</div>
 	  </div>
 	</div>
 </div>
 	<div style = " width: 70%; background-color: rgb(220, 210, 103)"class= "statscards">
 		<div style = "text-align: center;"id="mostExpensive"></div>
-		<div style = "font-size: 20px;">Most Expensive Item</div>
+		<div style = "font-size: 22px;">Most Expensive Item</div>
 		<table id="t01">
 			<tr>
 			  <th>ITEM</th>
@@ -146,6 +146,21 @@ table#t01 th {
 			</tr>
 		  </table>
 	</div>
+
+	<div style = "margin: 0 auto; width: 90%; justify-content: center" ></divstyle>>
+		<div style = "font-weight: bold;padding-top: 30px; text-align: center;font-size: 40px;">Category Breakdown</div>
+		<div style = "font-size: 15px"id="chartdivpie"></div>
+	</div>
+
+	<div style = "margin: 0 auto; width: 95%; justify-content: center" >
+		<div style = "font-weight: bold;padding-top: 30px; text-align: center;font-size: 40px;">Monthly Spending</div>
+		<div id="chartdiv"></div>
+	</div>
+
+	<div style = "margin: 0 auto; width: 95%; height: 500px; justify-content: center" >
+		<div style = "font-weight: bold;padding-top: 30px; text-align: center;font-size: 40px;">Order Timeline</div>
+		<div style = "font-size: 9px" id="chartdivtime"></div>
+	</div>
 </div>
 	<!-- Resources -->
 	<script src="https://www.amcharts.com/lib/4/core.js"></script>
@@ -157,9 +172,7 @@ table#t01 th {
 	<script src="./Cruncher_Brains/cruncher_brains_bundle.js"></script>
 	
 	<!-- HTML -->
-	<div id="chartdivpie"></div>
-	<div id="chartdiv"></div>
-	<div id="chartdivtime"></div>
+
 
 </div>
 	
