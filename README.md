@@ -7,8 +7,8 @@ If you are a frequent Amazon.com shopper, I believe this program will help you s
 You can crunch your own report on [my website](https://ryanvoigt.github.io/)
 
 ![demo](CruncherPhotos/CrunchWheel.gif)
+![report](CruncherPhotos/CrunchPlot2.gif)
 ![report](CruncherPhotos/CrunchPlot1.png)
-![report](CruncherPhotos/CrunchPlot2.png)
 
 # How To Use
 ### Go To [Amazon Report Download](https://www.amazon.com/gp/b2b/reports?ref_=ya_d_l_order_reports&)
