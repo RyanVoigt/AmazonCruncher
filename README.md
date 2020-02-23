@@ -4,7 +4,7 @@ If you are a frequent Amazon.com shopper, I believe this program will help you s
 ### For **Instructions** [scroll down](#how-to-use)
 
 # Example Report
-You can crunch your own report on [my website](https://ryanvoigt.github.io/)
+You can crunch your own report on [my website](https://ryanvoigt.github.io/Cruncher_Display.html)
 
 ![demo](CruncherPhotos/CrunchWheel.gif)
 ![report](CruncherPhotos/CrunchPlot2.gif)
@@ -20,7 +20,7 @@ You can crunch your own report on [my website](https://ryanvoigt.github.io/)
 
 - Click on [Request Report] and wait for a while - it may take a few minutes before you can download the report
 
-### Open the csv file in [Amazon Cruncher](https://ryanvoigt.github.io/)
+### Open the csv file in [Amazon Cruncher](https://ryanvoigt.github.io/Cruncher_Display.html)
 
 ### OR
 
