@@ -86,6 +86,11 @@ table#t01 th {
   0%   {left: 400px}
   100%  {left: 0px}
 }
+
+@keyframes fade {
+  0% { opacity: 0 }
+  100% { opacity: 1 }
+}
   </style>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -101,7 +106,7 @@ table#t01 th {
 <div id = "datastorage" style = "visibility: hidden;">
 
 <div style = "text-align: center; margin-bottom: 30px">
-<div id = "redcard" >
+<div id = "redcard" style = "display: inline-block; width: 27%;">
 	<div style = "background-color: rgb(220, 105, 103); margin-right: 15px;" class= "statscards" >
 		<div style = "text-align: center;"id="totalspent"></div>
 		<div style = "font-size: 22px;">Total Spent</div>
@@ -130,24 +135,24 @@ table#t01 th {
 			  <th>LINK</th>
 			</tr>
 			<tr>
-			  <td id="mostExpensiveItem1Name">Jill</td>
-			  <td id="mostExpensiveItem1Price">Smith</td>
-			  <td id="mostExpensiveItem1Link">50</td>
+			  <td id="mostExpensiveItem1Name"></td>
+			  <td id="mostExpensiveItem1Price"></td>
+			  <td id="mostExpensiveItem1Link"></td>
 			</tr>
 			<tr>
-			  <td id="mostExpensiveItem2Name">Eve</td>
-			  <td id="mostExpensiveItem2Price">Jackson</td>
-			  <td id="mostExpensiveItem2Link">94</td>
+			  <td id="mostExpensiveItem2Name"></td>
+			  <td id="mostExpensiveItem2Price"></td>
+			  <td id="mostExpensiveItem2Link"></td>
 			</tr>
 			<tr>
-			  <td id="mostExpensiveItem3Name">John</td>
-			  <td id="mostExpensiveItem3Price">Doe</td>
-			  <td id="mostExpensiveItem3Link">80</td>
+			  <td id="mostExpensiveItem3Name"></td>
+			  <td id="mostExpensiveItem3Price"></td>
+			  <td id="mostExpensiveItem3Link"></td>
 			</tr>
 		  </table>
 	</div>
 
-	<div style = "margin: 0 auto; width: 90%; justify-content: center" ></divstyle>>
+	<div style = "margin: 0 auto; width: 90%; justify-content: center" >
 		<div style = "font-weight: bold;padding-top: 30px; text-align: center;font-size: 40px;">Category Breakdown</div>
 		<div style = "font-size: 15px"id="chartdivpie"></div>
 	</div>

@@ -142,9 +142,7 @@ var getDateMap = function(start, end) {
 		document.getElementById("mostExpensiveItem3Name").innerHTML = data[mostExpensiveIndex3]["Title"]
 		document.getElementById("mostExpensiveItem3Price").innerHTML = data[mostExpensiveIndex3]["Item Total"]
 		document.getElementById("mostExpensiveItem3Link").innerHTML = data[mostExpensiveIndex3]["Website"]
-		document.getElementById("datastorage").style = "visibility: visible";
-		document.getElementById("redcard").style = "animation-name: enterLeft; display: inline-block; width: 27%; position: relative; animation-duration: 2s;";
-		document.getElementById("greencard").style = "animation-name: enterRight; display: inline-block; width: 27%; position: relative; animation-duration: 2s;";
+		document.getElementById("datastorage").style = "visibility: visible; animation-name: fade; animation-duration: 2s;";
 		//BAR PLOT
 
 //PIE Chart
